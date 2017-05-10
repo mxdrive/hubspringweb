@@ -20,6 +20,10 @@ public class SendMessages extends TestSuite{
     private String filesFolderCSS = ".dropbox-personal";
     private String filesCSS = ".file-name";
     private String selectFileBtnCSS = "#select-btn";
+    private String loginGoogleCSS = "#identifierId";
+    private String passGoogleCSS = "#password>div>div>div>input";
+    private String searchGoogleCSS = "div>div>div>div>div>input";
+    private String filesGoogleXpath = ".//*/div/div/div/div[3]/span";
 
     @Test
     public void sendTextMessage(String target) {
@@ -36,8 +40,9 @@ public class SendMessages extends TestSuite{
     @Test
     public void sendFiles(String target) {
         final File folder = new File("./FilesToUpload");
-        listFilesForFolder(folder, target);
-        dropbox(target);
+//        listFilesForFolder(folder, target);
+//        dropbox(target);
+        googleDrive(target);
     }
 
     public void listFilesForFolder(final File folder, String target) {
@@ -215,7 +220,10 @@ public class SendMessages extends TestSuite{
 
             if (!WebDriverRunner.source().contains("error") || !WebDriverRunner.source().contains("problem")) {
                 isDisplayed = true;
-            } else System.out.println("WebDriverRunner.source() " + WebDriverRunner.source());
+            } else {
+                screenshot("WebDriverRunner.source() " + filename);
+                System.out.println(filename + " made screenshot");
+            }
             switchTo().parentFrame();
             switchTo().parentFrame();
         }
@@ -298,5 +306,92 @@ public class SendMessages extends TestSuite{
         }
         System.out.println("Dropbox Files Upload to " + target + " - " + result);
         System.out.println("Dropbox Files Preview - " + viewAttach);
+    }
+
+    //TODO fix this
+    public void googleDrive(String target) {
+        int size = 100;
+        String result = "ok";
+        String filename;
+        String viewAttach = "ok";
+        for (int i = 0; i < size; i++) {
+            $(".attachment-icon").click();
+            $$(".send-btn").get(0).click();
+            Selenide.switchTo().window(1);
+            if ($(loginGoogleCSS).isDisplayed()) {
+                $(loginGoogleCSS).setValue(email);
+                $(loginGoogleCSS).sendKeys(Keys.ENTER);
+                $(passGoogleCSS).setValue("El413423");
+                $(passGoogleCSS).sendKeys(Keys.ENTER);
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.numberOfWindowsToBe(1));
+                Selenide.switchTo().window("The Hub");
+//                System.out.println(WebDriverRunner.currentFrameUrl());
+            }
+            switchTo().frame(2);
+//            System.out.println(WebDriverRunner.currentFrameUrl());
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($(searchGoogleCSS)));
+            $(searchGoogleCSS).setValue("testfile");
+            $(searchGoogleCSS).sendKeys(Keys.ENTER);
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(By.xpath(filesGoogleXpath)).get(0)));
+            size = $$(By.xpath(filesGoogleXpath)).size();
+            filename = $$(By.xpath(filesGoogleXpath)).get(i).getText();
+            $$(By.xpath(filesGoogleXpath)).get(i).click();
+            for (SelenideElement e : $$("#doclist>div>div>div>div>div>div>div>div>div>div>div")) {
+                if (e.getAttribute("id").contains("picker") && e.getText().equals("Select")) {
+                    e.click();
+                }
+                }
+//            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.numberOfWindowsToBe(1));
+//            Selenide.switchTo().window("The Hub");
+            switchTo().parentFrame();
+
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.elementToBeClickable($$(".send-btn").get($$(".send-btn").size() - 1)));
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(".send-btn").get(2)));
+            $$(".send-btn").get(2).click();
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(".attachment-container").get($$(".attachment-container").size() - 1).$(By.xpath("./md-progress-bar"))));
+            } catch (Exception ignored) {}
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 150).until(ExpectedConditions.invisibilityOf($$(".attachment-container").get($$(".attachment-container").size() - 1).$(By.xpath("./md-progress-bar"))));
+            } catch (Exception ignored) {
+//                    System.out.println("File " + fileEntry.getName() + " hasn't been uploaded");
+                result = "fail";
+//                    System.out.println("$(\".file-name\").getText() - " + $$(".file-name").get($$(".file-name").size() - 1).getText());
+                System.out.println("File " + filename + " hasn't been uploaded");
+                screenshot(filename + ".jpg");
+            }
+
+            if (!$$(".file-name").get($$(".file-name").size() - 1).exists() || !filename.contains($$(".file-name").get($$(".file-name").size() - 1).getText().replace("...", "@#@").split("@#@")[0])) {
+                result = "fail";
+//                    System.out.println("$(\".file-name\").getText() - " + $$(".file-name").get($$(".file-name").size() - 1).getText());
+                System.out.println("File " + filename + " hasn't been uploaded");
+            }
+            else {
+                if ($$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div[1]")).$(By.xpath("./img")).exists()) {
+                    $$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div[1]")).$(By.xpath("./img")).click();
+                } else if ($$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div")).$(By.xpath("./img")).exists()) {
+                    $$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div")).$(By.xpath("./img")).click();
+                }
+                else $$(".file-name").get($$(".file-name").size() - 1).click();
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 1).until(ExpectedConditions.invisibilityOf($$(".file-name").get($$(".file-name").size() - 1)));
+                } catch (Exception ignored) {
+                }
+                if (!imageVideoAttach(filename)) {
+                    viewAttach = "fail";
+                }
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.elementToBeClickable($(".close")));
+                } catch (Exception ignored) {
+                }
+                if ($$(".close").get(1).isDisplayed()) {
+                    $$(".close").get(1).click();
+                } else if ($$(".close").get(0).isDisplayed()){
+                    $$(".close").get(0).click();
+                }
+            }
+        }
+        System.out.println("Google Drive Files Upload to " + target + " - " + result);
+        System.out.println("Google Drive Files Preview - " + viewAttach);
     }
 }

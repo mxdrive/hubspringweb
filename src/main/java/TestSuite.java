@@ -1,8 +1,18 @@
+import com.codeborne.selenide.WebDriverProvider;
+import com.codeborne.selenide.WebDriverRunner;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static com.codeborne.selenide.WebDriverRunner.setWebDriver;
 
 public class TestSuite {
 
@@ -17,9 +27,14 @@ public class TestSuite {
 
     @BeforeSuite
     public void preconditions() {
-        System.setProperty("selenide.browser", "chrome");
+//        System.setProperty("selenide.browser", "chrome");
+
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        setWebDriver(new CustomWebDriverProvider().createDriver(capabilities));
+
 //        System.setProperty("webdriver.gecko.driver", "./geckodriver");
 //        Configuration.browser = "marionette";
+
         getWebDriver().manage().window().maximize();
         open(baseURL);
     }
