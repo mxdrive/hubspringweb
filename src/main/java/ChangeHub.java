@@ -42,7 +42,6 @@ public class ChangeHub extends ProfileEdit{
             System.out.println("Change Hub - ok");
             new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.elementToBeClickable($$(hubIconsCSS).get(currentHub)));
             $$(hubIconsCSS).get(2).click();
-            System.out.println("currentHub " + currentHub);
         } else {
             System.out.println("Change Hub - fail");
             $$(hubIconsCSS).get(2).click();

@@ -50,7 +50,7 @@ public class ProfileEdit extends TestSuite {
         String suffix = "Jr.";
         String title = "Title";
         String companyName = fairy.person().getCompany().getName();
-        String secEmail = fairy.person().getCompanyEmail();
+        String secEmail = fairy.textProducer().randomString(5) + "@" + fairy.textProducer().randomString(5) + "." + fairy.textProducer().randomString(3);
         int ph0 = fairy.baseProducer().randomBetween(0, 9);
         int ph1 = fairy.baseProducer().randomBetween(0, 9);
         int ph2 = fairy.baseProducer().randomBetween(0, 9);

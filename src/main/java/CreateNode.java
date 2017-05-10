@@ -146,7 +146,7 @@ public class CreateNode {
         $(saveBtnCss).click();
         $(allRolesCheckboxCSS).click();
         $(saveRolesBtnCSS).click();
-        if ($(nodesTitleCSS).getText().equals(nodeName) && $(".text-block>div>input").getAttribute("ng-reflect-model").equals(link)) {
+        if ($(nodesTitleCSS).getText().equals(nodeName) && link.contains($(".text-block>div>input").getAttribute("ng-reflect-model"))) {
             System.out.println("Link Node Creation - ok");
         } else {
             System.out.println($(".text-block>div>input").getAttribute("ng-reflect-model") + " - $(\".text-block>div>input\").getText(); " + link + " - link");

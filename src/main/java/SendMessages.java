@@ -1,3 +1,4 @@
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.codearte.jfairy.Fairy;
@@ -12,8 +13,13 @@ import java.io.File;
 
 import static com.codeborne.selenide.Selenide.*;
 
-public class SendMessages {
+public class SendMessages extends TestSuite{
     Fairy fairy = Fairy.create();
+    private String loginCSS = "[name=login_email]";
+    private String passwordCSS = "[name=login_password]";
+    private String filesFolderCSS = ".dropbox-personal";
+    private String filesCSS = ".file-name";
+    private String selectFileBtnCSS = "#select-btn";
 
     @Test
     public void sendTextMessage(String target) {
@@ -31,6 +37,7 @@ public class SendMessages {
     public void sendFiles(String target) {
         final File folder = new File("./FilesToUpload");
         listFilesForFolder(folder, target);
+        dropbox(target);
     }
 
     public void listFilesForFolder(final File folder, String target) {
@@ -101,10 +108,9 @@ public class SendMessages {
                         new WebDriverWait(WebDriverRunner.getWebDriver(), 1).until(ExpectedConditions.invisibilityOf($$(".file-name").get($$(".file-name").size() - 1)));
                     } catch (Exception ignored) {
                     }
-                    if (fileEntry.getName().toLowerCase().contains(".jpg") || fileEntry.getName().toLowerCase().contains(".jpeg") || fileEntry.getName().toLowerCase().contains(".png") || fileEntry.getName().toLowerCase().contains(".gif") || fileEntry.getName().toLowerCase().contains(".svg") || fileEntry.getName().toLowerCase().contains(".mp4") || fileEntry.getName().toLowerCase().contains(".ogg") || fileEntry.getName().toLowerCase().contains(".mpg") || fileEntry.getName().toLowerCase().contains(".3gp") || fileEntry.getName().toLowerCase().contains(".avi") || fileEntry.getName().toLowerCase().contains(".mov")) {
-                        if (!imageVideoAttach(fileEntry.getName())) {
-                            viewAttach = "fail";
-                        }
+                    if (!imageVideoAttach(fileEntry.getName())) {
+                        viewAttach = "fail";
+                        System.out.println("fileview fail, file " + fileEntry.getName());
                     }
                     try {
                         new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.elementToBeClickable($(".close")));
@@ -197,7 +203,100 @@ public class SendMessages {
                 System.out.println("Problem with preview of file " + filename);
                 screenshot("Problem with preview of file " + filename);
             }
+        } else {
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(0));
+
+            try {
+                switchTo().frame(0);
+//                System.out.println("url - " + WebDriverRunner.currentFrameUrl() + " file - " + filename + " frame 0");
+            } catch (Exception ignored) {
+
+            }
+
+            if (!WebDriverRunner.source().contains("error") || !WebDriverRunner.source().contains("problem")) {
+                isDisplayed = true;
+            } else System.out.println("WebDriverRunner.source() " + WebDriverRunner.source());
+            switchTo().parentFrame();
+            switchTo().parentFrame();
         }
         return isDisplayed;
+    }
+
+    public void dropbox(String target) {
+
+        int size = 100;
+        String result = "ok";
+        String filename = null;
+        String viewAttach = "ok";
+        for (int i = 0; i < size; i++) {
+            $(".attachment-icon").click();
+            $$(".send-btn").get(1).click();
+            Selenide.switchTo().window(1);
+            if ($$(loginCSS).get(1).isDisplayed()) {
+                $$(loginCSS).get(1).setValue(email);
+                $$(passwordCSS).get(1).setValue("El413423");
+                $(".login-button>.sign-in-text").click();
+            }
+            $(filesFolderCSS).click();
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(filesCSS).get(0)));
+            for (SelenideElement e : $$(filesCSS)) {
+                if (e.getText().equals("testfiles")) e.click();
+            }
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(filesCSS).get(0)));
+            size = $$(filesCSS).size();
+            filename = $$(filesCSS).get(i).getText();
+            $$(filesCSS).get(i).click();
+            $(selectFileBtnCSS).click();
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.numberOfWindowsToBe(1));
+            Selenide.switchTo().window("The Hub");
+
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.elementToBeClickable($$(".send-btn").get($$(".send-btn").size() - 1)));
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(".send-btn").get(2)));
+            $$(".send-btn").get(2).click();
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(".attachment-container").get($$(".attachment-container").size() - 1).$(By.xpath("./md-progress-bar"))));
+            } catch (Exception ignored) {}
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 150).until(ExpectedConditions.invisibilityOf($$(".attachment-container").get($$(".attachment-container").size() - 1).$(By.xpath("./md-progress-bar"))));
+            } catch (Exception ignored) {
+//                    System.out.println("File " + fileEntry.getName() + " hasn't been uploaded");
+                result = "fail";
+//                    System.out.println("$(\".file-name\").getText() - " + $$(".file-name").get($$(".file-name").size() - 1).getText());
+                System.out.println("File " + filename + " hasn't been uploaded");
+                screenshot(filename + ".jpg");
+            }
+
+            if (!$$(".file-name").get($$(".file-name").size() - 1).exists() || !filename.contains($$(".file-name").get($$(".file-name").size() - 1).getText().replace("...", "@#@").split("@#@")[0])) {
+                result = "fail";
+//                    System.out.println("$(\".file-name\").getText() - " + $$(".file-name").get($$(".file-name").size() - 1).getText());
+                System.out.println("File " + filename + " hasn't been uploaded");
+            }
+            else {
+                if ($$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div[1]")).$(By.xpath("./img")).exists()) {
+                    $$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div[1]")).$(By.xpath("./img")).click();
+                } else if ($$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div")).$(By.xpath("./img")).exists()) {
+                    $$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div")).$(By.xpath("./img")).click();
+                }
+                else $$(".file-name").get($$(".file-name").size() - 1).click();
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 1).until(ExpectedConditions.invisibilityOf($$(".file-name").get($$(".file-name").size() - 1)));
+                } catch (Exception ignored) {
+                }
+                if (!imageVideoAttach(filename)) {
+                    viewAttach = "fail";
+                }
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.elementToBeClickable($(".close")));
+                } catch (Exception ignored) {
+                }
+                if ($$(".close").get(1).isDisplayed()) {
+                    $$(".close").get(1).click();
+                } else if ($$(".close").get(0).isDisplayed()){
+                    $$(".close").get(0).click();
+                }
+            }
+        }
+        System.out.println("Dropbox Files Upload to " + target + " - " + result);
+        System.out.println("Dropbox Files Preview - " + viewAttach);
     }
 }
