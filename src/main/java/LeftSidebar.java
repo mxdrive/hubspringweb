@@ -14,6 +14,7 @@ public class LeftSidebar extends TestSuite{
     public void chats() {
         new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.elementToBeClickable($$(".chats-list-container>div>div>div>div>.message").get(0)));
 //        isLastMessageDisplayed(".chats-list-container>div>div>div>div>.message", ".message-parsed", ".chats-list-container>div>div>div>div>.message", "Chats", ".outgoin.time-ago");
+//        new ScrollHandler().scrollHandler(".chats-list-container>div", WebDriverRunner.getWebDriver());
         isLastMessageDisplayed(".chats-list-container>div>div>div>div>.message", ".message-parsed", ".chats-list-container>div>div>div>div>.message", "Chats");
         chatsFilter();
 //        open(baseURL);
@@ -29,6 +30,7 @@ public class LeftSidebar extends TestSuite{
         $$(".tab-icon").get(1).click();
         $$(".tab-icon>i").get(1).shouldHave(Condition.attribute("class", "material-icons active"));
 //        $$(".tab-icon").get(1).shouldBe(Condition.selected);
+//        new ScrollHandler().scrollHandler(".chats-list-container>div", WebDriverRunner.getWebDriver());
         chatsAreClickable(".chats-list-container>div>div>div>.title","streams");
 //        isLastMessageDisplayed(".chats-list-container>div>div>div>.title", ".message-parsed", ".chats-list-container>div>div>div>.message", "Streams", ".msg-date");
         isLastMessageDisplayed(".chats-list-container>div>div>div>.title", ".message-parsed", ".chats-list-container>div>div>div>.message", "Streams");
@@ -42,6 +44,7 @@ public class LeftSidebar extends TestSuite{
     @Test
     public void alerts() {
         $$(".tab-icon").get(2).click();
+//        new ScrollHandler().scrollHandler(".chats-list-container>div", WebDriverRunner.getWebDriver());
 //        isLastMessageDisplayed(".message-text>p",".chats-list-container>div>div", ".chats-list-container>div>div>div>div>.message", "Alerts", ".message-bubble.tail>footer");
         isLastMessageDisplayed(".message-text>p",".chats-list-container>div>div", ".chats-list-container>div>div>div>div>.message", "Alerts");
         open(baseURL);
@@ -280,7 +283,7 @@ public class LeftSidebar extends TestSuite{
                         new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.textToBePresentInElement($$(messagesCSS).get($$(messagesCSS).size() - 1), $$(messageSidebarCSS).get(i).getText().substring($$(messageSidebarCSS).get(i).getText().indexOf(":") + 2).replace("...", "")));
                     } catch (Exception ignored) {
                     }
-                    if (!$$(messagesCSS).get($$(messagesCSS).size() - 1).getText().replaceAll("(\\r|\\n|\\r\\n)+", "").contains($$(messageSidebarCSS).get(i).getText().substring($$(messageSidebarCSS).get(i).getText().indexOf(":") + 2).replace("...", ""))) {
+                    if (!$$(messagesCSS).get($$(messagesCSS).size() - 1).getText().replaceAll("(\\r|\\n|\\r\\n)+", "").contains($$(messageSidebarCSS).get(i).getText().substring($$(messageSidebarCSS).get(i).getText().indexOf(":") + 2).replace("...", "")) || !$$(messageSidebarCSS).get(i).getText().substring($$(messageSidebarCSS).get(i).getText().indexOf(":") + 2).replace("...", "").contains($$(messagesCSS).get($$(messagesCSS).size() - 1).getText().replaceAll("(\\r|\\n|\\r\\n)+", ""))) {
                         if (!$$(messageSidebarCSS).get(i).getText().substring($$(messageSidebarCSS).get(i).getText().indexOf(":") + 1).replace("...", "").contains($$(".file-name").get($$(".file-name").size() - 1).getText().replace("...", "@#@").split("@#@")[0])) {
                             result = "fail";
                             System.out.println($$(messagesCSS).get($$(messagesCSS).size() - 1).getText().replaceAll("(\\r|\\n|\\r\\n)+", "") + " - last message in chat");

@@ -40,9 +40,9 @@ public class SendMessages extends TestSuite{
     @Test
     public void sendFiles(String target) {
         final File folder = new File("./FilesToUpload");
-//        listFilesForFolder(folder, target);
-//        dropbox(target);
-        googleDrive(target);
+        listFilesForFolder(folder, target);
+        dropbox(target);
+//        googleDrive(target);
     }
 
     public void listFilesForFolder(final File folder, String target) {
@@ -155,11 +155,10 @@ public class SendMessages extends TestSuite{
         {
             WebDriverRunner.getWebDriver().switchTo().alert();
             return true;
-        }   // try
-        catch (NoAlertPresentException Ex)
+        } catch (NoAlertPresentException Ex)
         {
             return false;
-        }   // catch
+        }
     }
 
     private Boolean isClickable(SelenideElement element) {
@@ -317,7 +316,10 @@ public class SendMessages extends TestSuite{
         for (int i = 0; i < size; i++) {
             $(".attachment-icon").click();
             $$(".send-btn").get(0).click();
-            Selenide.switchTo().window(1);
+            System.out.println(WebDriverRunner.getWebDriver().getWindowHandles().size());
+            if (isWindow()) {
+                Selenide.switchTo().window(1);
+            }
             if ($(loginGoogleCSS).isDisplayed()) {
                 $(loginGoogleCSS).setValue(email);
                 $(loginGoogleCSS).sendKeys(Keys.ENTER);
@@ -330,20 +332,26 @@ public class SendMessages extends TestSuite{
             switchTo().frame(2);
 //            System.out.println(WebDriverRunner.currentFrameUrl());
             new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($(searchGoogleCSS)));
-            $(searchGoogleCSS).setValue("testfile");
-            $(searchGoogleCSS).sendKeys(Keys.ENTER);
-            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(By.xpath(filesGoogleXpath)).get(0)));
-            size = $$(By.xpath(filesGoogleXpath)).size();
-            filename = $$(By.xpath(filesGoogleXpath)).get(i).getText();
-            $$(By.xpath(filesGoogleXpath)).get(i).click();
+//            $(searchGoogleCSS).sendKeys("testfile");
+//            $(searchGoogleCSS).sendKeys(Keys.ENTER);
+//            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(By.xpath(filesGoogleXpath)).get(0)));
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(".Ti-mj-Oc-tc").get(0)));
+            System.out.println($$(".Ti-mj-Oc-tc").size() + " size");
+//            size = $$(By.xpath(filesGoogleXpath)).size();
+            size = $$(".Ti-mj-Oc-tc").size();
+//            filename = $$(By.xpath(filesGoogleXpath)).get(i).getText();
+            filename = $$(".Ti-mj-Oc-tc").get(i).getText();
+//            $$(By.xpath(filesGoogleXpath)).get(i).click();
+            $$(".Ti-mj-Oc-tc").get(i).click();
             for (SelenideElement e : $$("#doclist>div>div>div>div>div>div>div>div>div>div>div")) {
                 if (e.getAttribute("id").contains("picker") && e.getText().equals("Select")) {
                     e.click();
                 }
-                }
+            }
 //            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.numberOfWindowsToBe(1));
 //            Selenide.switchTo().window("The Hub");
             switchTo().parentFrame();
+            System.out.println(WebDriverRunner.currentFrameUrl());
 
             new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.elementToBeClickable($$(".send-btn").get($$(".send-btn").size() - 1)));
             new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(".send-btn").get(2)));
@@ -393,5 +401,15 @@ public class SendMessages extends TestSuite{
         }
         System.out.println("Google Drive Files Upload to " + target + " - " + result);
         System.out.println("Google Drive Files Preview - " + viewAttach);
+    }
+
+    private Boolean isWindow() {
+        Boolean isWindow = false;
+        try {
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 1).until(ExpectedConditions.numberOfWindowsToBe(2));
+            isWindow = true;
+        } catch (Exception ignored) {
+        }
+        return isWindow;
     }
 }

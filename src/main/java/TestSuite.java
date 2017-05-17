@@ -51,9 +51,9 @@ public class TestSuite {
 
     @Test(dependsOnMethods = "login", priority = 3)
     public void leftSidebar() throws InterruptedException {
-//        new LeftSidebar().chats();
+        new LeftSidebar().chats();
         //TODO remove and uncomment upper line
-        $(".create-chat-icon").click();
+//        $(".create-chat-icon").click();
 
         CreateChat chat = new CreateChat();
         chat.createChat("Role");
