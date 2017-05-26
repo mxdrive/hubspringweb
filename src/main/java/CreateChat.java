@@ -35,7 +35,9 @@ public class CreateChat {
                 new WebDriverWait(WebDriverRunner.getWebDriver(), 8).until(ExpectedConditions.elementToBeClickable($$(".chat-name").get($$(".chat-name").size() -1)));
             } catch (Exception ignored) {
             }
-            SelenideElement radio = $$(".chat-name").get(random.nextInt($$(".chat-name").size()));
+            //TODO temp
+            SelenideElement radio = $$(".chat-name").get(random.nextInt($$(".chat-name").size() - 1));
+//            SelenideElement radio = $$(".chat-name").get(0);
 //            System.out.println($$(".chat-name").get(random.nextInt($$(".chat-name").size())).getText());
 //            SelenideElement radio = $$(".chat-name").get(0);
             chatname = radio.getText();
@@ -58,7 +60,7 @@ public class CreateChat {
             new WebDriverWait(WebDriverRunner.getWebDriver(), 4).until(ExpectedConditions.not(ExpectedConditions.urlContains("manage/conversation")));
         } catch (Exception ignored) {
         }
-        refresh();
+//        refresh();
         String result = "ok";
         if (chatType.equals("Direct")) {
             if (!$$(".chat-item>div>.title").get(0).getText().equals($(".profile-name").getText())) {

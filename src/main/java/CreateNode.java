@@ -29,6 +29,7 @@ public class CreateNode {
     String progressbarCSS = ".md-progress-bar-buffer";
     String allRolesCheckboxCSS = ".md-checkbox-indeterminate";
     String nodesTitleCSS = ".header>.title";
+    String linkNodesTitleCSS = ".main-title";
     String textNodesTextCSS = ".text-html>p";
     String rolesCheckboxesCSS = ".role-check-box";
     String searchRolesCSS = ".input-header.ng-untouched.ng-pristine.ng-valid";
@@ -77,9 +78,19 @@ public class CreateNode {
             }
             new WebDriverWait(WebDriverRunner.getWebDriver(), 120).until(ExpectedConditions.invisibilityOf($(progressbarCSS)));
 
+
             if (!$(".md-simple-snackbar-message").isDisplayed()) {
                 $(allRolesCheckboxCSS).click();
                 $(saveRolesBtnCSS).click();
+                new WebDriverWait(WebDriverRunner.getWebDriver(),120).until(ExpectedConditions.invisibilityOf($(saveRolesBtnCSS)));
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(),120).until(ExpectedConditions.invisibilityOf($("#Oval")));
+                } catch (Exception e) {
+                    System.out.println("infLoader + " + fileList.get(i).getName());
+                }
+                if ($(By.id("#Oval")).isDisplayed()) {
+                    System.out.println("(File Node Creation) File " + fileList.get(i).getName() + " can't be displayed");
+                }
             } else {
                 System.out.println("(File Node Creation) File " + fileList.get(i).getName() + " hasn't been uploaded");
                 if ($(".clear-image").isDisplayed()) {
@@ -146,7 +157,8 @@ public class CreateNode {
         $(saveBtnCss).click();
         $(allRolesCheckboxCSS).click();
         $(saveRolesBtnCSS).click();
-        if ($(nodesTitleCSS).getText().equals(nodeName) && link.contains($(".text-block>div>input").getAttribute("ng-reflect-model"))) {
+//        if ($(linkNodesTitleCSS).getText().equals(nodeName) && link.contains($(".text-block>div>input").getAttribute("ng-reflect-model"))) {
+        if ($(linkNodesTitleCSS).getText().equals(nodeName) && link.contains($(".back-btn>p").getText())) {
             System.out.println("Link Node Creation - ok");
         } else {
             System.out.println($(".text-block>div>input").getAttribute("ng-reflect-model") + " - $(\".text-block>div>input\").getText(); " + link + " - link");

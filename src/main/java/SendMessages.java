@@ -17,6 +17,7 @@ public class SendMessages extends TestSuite{
     Fairy fairy = Fairy.create();
     private String loginCSS = "[name=login_email]";
     private String passwordCSS = "[name=login_password]";
+    public static final File folder = new File("./FilesToUpload");
     private String filesFolderCSS = ".dropbox-personal";
     private String filesCSS = ".file-name";
     private String selectFileBtnCSS = "#select-btn";
@@ -39,9 +40,9 @@ public class SendMessages extends TestSuite{
 
     @Test
     public void sendFiles(String target) {
-        final File folder = new File("./FilesToUpload");
         listFilesForFolder(folder, target);
-        dropbox(target);
+        //TODO temp
+//        dropbox(target);
 //        googleDrive(target);
     }
 
@@ -88,7 +89,7 @@ public class SendMessages extends TestSuite{
                     new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(".attachment-container").get($$(".attachment-container").size() - 1).$(By.xpath("./md-progress-bar"))));
                 } catch (Exception ignored) {}
                 try {
-                    new WebDriverWait(WebDriverRunner.getWebDriver(), 150).until(ExpectedConditions.invisibilityOf($$(".attachment-container").get($$(".attachment-container").size() - 1).$(By.xpath("./md-progress-bar"))));
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 180).until(ExpectedConditions.invisibilityOf($$(".attachment-container").get($$(".attachment-container").size() - 1).$(By.xpath("./md-progress-bar"))));
                 } catch (Exception ignored) {
 //                    System.out.println("File " + fileEntry.getName() + " hasn't been uploaded");
                     result = "fail";
@@ -216,9 +217,14 @@ public class SendMessages extends TestSuite{
             } catch (Exception ignored) {
 
             }
-
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.invisibilityOf($(".md-primary")));
+            } catch (Exception ignored) {
+            }
             if (!WebDriverRunner.source().contains("error") || !WebDriverRunner.source().contains("problem")) {
-                isDisplayed = true;
+                if (!$(".md-primary").isDisplayed()) {
+                    isDisplayed = true;
+                }
             } else {
                 screenshot("WebDriverRunner.source() " + filename);
                 System.out.println(filename + " made screenshot");
@@ -245,11 +251,17 @@ public class SendMessages extends TestSuite{
                 $(".login-button>.sign-in-text").click();
             }
             $(filesFolderCSS).click();
-            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(filesCSS).get(0)));
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(filesCSS).get(0)));
+            } catch (Exception ignored) {
+            }
             for (SelenideElement e : $$(filesCSS)) {
                 if (e.getText().equals("testfiles")) e.click();
             }
-            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(filesCSS).get(0)));
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(filesCSS).get(0)));
+            } catch (Exception ignored) {
+            }
             size = $$(filesCSS).size();
             filename = $$(filesCSS).get(i).getText();
             $$(filesCSS).get(i).click();

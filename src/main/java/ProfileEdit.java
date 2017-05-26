@@ -74,7 +74,10 @@ public class ProfileEdit extends TestSuite {
 
         for (int i = 0; i < $$(inputsCSS).size(); i++) {
             new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.elementToBeClickable($$(inputsCSS).get(0)));
-            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.attributeContains($$(inputsCSS).get(0), "ng-reflect-model", "Dr."));
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.attributeContains($$(inputsCSS).get(0), "ng-reflect-model", "Dr."));
+            } catch (Exception ignored) {
+            }
             switch (i) {
                 case 0: $$(inputsCSS).get(i).clear();
                     $$(inputsCSS).get(i).setValue(prefix);

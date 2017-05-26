@@ -19,7 +19,7 @@ public class TestSuite {
     public static String baseURL = "http://dev.elhubio.com";
     public String fileName = "./credentials.txt";
     public static String email = "achernenko@s-pro.io";
-//    public static String email = "testhub@mailinator.com";
+//    public static String email = "testhub23@mailinator.com";
     public static String password = "Password1!";
     public static String password2 = "Ploki100!";
 //    public static String email = "dacevedo@jhsmiami.org";
@@ -49,11 +49,19 @@ public class TestSuite {
         new IsTabsClickable().allMethods();
     }
 
+//    @Test
+//    public void chats() throws InterruptedException {
+//        for (int i = 0; i <= 50; i++) {
+//            leftSidebar();
+//        }
+//    }
+
     @Test(dependsOnMethods = "login", priority = 3)
     public void leftSidebar() throws InterruptedException {
-        new LeftSidebar().chats();
+//        new LeftSidebar().chats();
         //TODO remove and uncomment upper line
-//        $(".create-chat-icon").click();
+        Thread.sleep(2000);
+        $(".create-chat-icon").click();
 
         CreateChat chat = new CreateChat();
         chat.createChat("Role");

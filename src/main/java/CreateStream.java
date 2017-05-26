@@ -6,9 +6,7 @@ import org.testng.annotations.Test;
 
 import java.util.Random;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.refresh;
+import static com.codeborne.selenide.Selenide.*;
 
 public class CreateStream {
     public String searchValue;
@@ -22,11 +20,15 @@ public class CreateStream {
         streamName = fairy.textProducer().sentence(10);
         $("#chat-title").setValue(streamName);
         $(".row>div>label>textarea").setValue(fairy.textProducer().sentence(10));
-        $$(".md-checkbox-label").get(random.nextInt($$(".md-checkbox-label").size())).click();
+//        $$(".md-checkbox-label").get(random.nextInt($$(".md-checkbox-label").size())).click();
         new CreateNode().changeNodeIcon(".input-file", 0, 70);
         $(".bt-save-send").click();
+        //TODO add roles choice?
+        $(".btn-text").click();
         new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.not(ExpectedConditions.urlContains("manage")));
-        refresh();
+//        refresh();
+        new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.not(ExpectedConditions.urlContains(";")));
+//        open(WebDriverRunner.url().replaceAll(";", "/"));
         $$(".text-block").get(0).click();
         try {
             new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.textToBePresentInElement($(".main-title"), streamName));
