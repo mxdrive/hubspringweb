@@ -17,7 +17,7 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class CreateNode {
     String setingsBtnsCSS = ".settings-icon";
-    String createNodeBtnCSS = ".md-menu-content>button";
+    String createNodeBtnsCSS = ".md-menu-content>button";
     String tabsBtnsCSS = ".btn-name";
     String addFilesBtnsCSS = ".choose-btn";
     String inputsCSS = ".md-input-table>.md-input-infix>input";
@@ -51,19 +51,34 @@ public class CreateNode {
 
         for (int i = 0; i < fileList.size(); i++){
             nodeName = fairy.textProducer().latinWord(2).replaceAll(" ", "_") + "." + fileList.get(i).getName().replace(".", "@@").split("@@")[1];
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($$(setingsBtnsCSS).get(1)));
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.elementToBeClickable($$(setingsBtnsCSS).get(1)));
             $$(setingsBtnsCSS).get(1).click();
-            if ($(createNodeBtnCSS).isDisplayed()) {
-                $(createNodeBtnCSS).click();
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 2).until(ExpectedConditions.elementToBeClickable($$(createNodeBtnsCSS).get(0)));
+            } catch (Exception ignored) {
+            }
+            if ($$(createNodeBtnsCSS).get(0).isDisplayed()) {
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($$(setingsBtnsCSS).get(1)));
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.elementToBeClickable($$(setingsBtnsCSS).get(1)));
+                } catch (Exception ignored) {
+                }
+                $$(createNodeBtnsCSS).get(0).click();
             } else {
                 refresh();
+                System.out.println("refresh");
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($$(setingsBtnsCSS).get(1)));
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.elementToBeClickable($$(setingsBtnsCSS).get(1)));
                 $$(setingsBtnsCSS).get(1).click();
-                $(createNodeBtnCSS).click();
+                $$(createNodeBtnsCSS).get(0).click();
             }
             try {
                 new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(addFilesBtnsCSS).get(0)));
             } catch (Exception e) {
                 screenshot("fileUpload");
             }
+//            screenshot("node_creation_may_fail");
             $$(addFilesBtnsCSS).get(0).$(By.xpath("./input")).uploadFile(fileList.get(i));
             $(inputsCSS).setValue(nodeName);
             $(saveBtnCss).click();
@@ -84,13 +99,42 @@ public class CreateNode {
                 $(saveRolesBtnCSS).click();
                 new WebDriverWait(WebDriverRunner.getWebDriver(),120).until(ExpectedConditions.invisibilityOf($(saveRolesBtnCSS)));
                 try {
-                    new WebDriverWait(WebDriverRunner.getWebDriver(),120).until(ExpectedConditions.invisibilityOf($("#Oval")));
-                } catch (Exception e) {
-                    System.out.println("infLoader + " + fileList.get(i).getName());
+                    new WebDriverWait(WebDriverRunner.getWebDriver(),2).until(ExpectedConditions.visibilityOf($("iframe")));
+                } catch (Exception ignored) {
                 }
-                if ($(By.id("#Oval")).isDisplayed()) {
-                    System.out.println("(File Node Creation) File " + fileList.get(i).getName() + " can't be displayed");
+                if ($("iframe").isDisplayed()){
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(0));
+
+                    try {
+                        switchTo().frame(0);
+//                System.out.println("url - " + WebDriverRunner.currentFrameUrl() + " file - " + filename + " frame 0");
+                    } catch (Exception ignored) {
+
+                    }
+                    try {
+                        new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.invisibilityOf($(".md-primary")));
+                    } catch (Exception ignored) {
+                    }
+                    if (!WebDriverRunner.source().contains("error") || !WebDriverRunner.source().contains("problem")) {
+//                if (!$(".md-primary>svg>path").isDisplayed()) {
+                        result = "fail";
+                    } else {
+                        screenshot("WebDriverRunner.source() " + fileList.get(i));
+                        System.out.println(fileList.get(i) + " made screenshot");
+                    }
+                    switchTo().parentFrame();
+                    switchTo().parentFrame();
+                } else if ($("#Oval").isDisplayed()) {
+                    try {
+                        new WebDriverWait(WebDriverRunner.getWebDriver(),120).until(ExpectedConditions.invisibilityOf($("#Oval")));
+                    } catch (Exception e) {
+                        System.out.println("infLoader + " + fileList.get(i).getName());
+                    }
+                    if ($(By.id("#Oval")).isDisplayed()) {
+                        System.out.println("(File Node Creation) File " + fileList.get(i).getName() + " can't be displayed");
+                    }
                 }
+
             } else {
                 System.out.println("(File Node Creation) File " + fileList.get(i).getName() + " hasn't been uploaded");
                 if ($(".clear-image").isDisplayed()) {
@@ -106,7 +150,7 @@ public class CreateNode {
     @Test
     public void createContactNode() {
         $$(setingsBtnsCSS).get(1).click();
-        $(createNodeBtnCSS).click();
+        $$(createNodeBtnsCSS).get(0).click();
         new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(addFilesBtnsCSS).get(0)));
         $$(tabsBtnsCSS).get(1).click();
         changeInputFields();
@@ -121,7 +165,7 @@ public class CreateNode {
     @Test
     public void createTextNode() {
         $$(setingsBtnsCSS).get(1).click();
-        $(createNodeBtnCSS).click();
+        $$(createNodeBtnsCSS).get(0).click();
         new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(addFilesBtnsCSS).get(0)));
         $$(tabsBtnsCSS).get(2).click();
         nodeName = fairy.textProducer().latinWord(2);
@@ -144,7 +188,7 @@ public class CreateNode {
     @Test
     public void createLinkNode() {
         $$(setingsBtnsCSS).get(1).click();
-        $(createNodeBtnCSS).click();
+        $$(createNodeBtnsCSS).get(0).click();
         new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(addFilesBtnsCSS).get(0)));
         $$(tabsBtnsCSS).get(3).click();
         nodeName = fairy.textProducer().latinWord(2);
@@ -158,7 +202,8 @@ public class CreateNode {
         $(allRolesCheckboxCSS).click();
         $(saveRolesBtnCSS).click();
 //        if ($(linkNodesTitleCSS).getText().equals(nodeName) && link.contains($(".text-block>div>input").getAttribute("ng-reflect-model"))) {
-        if ($(linkNodesTitleCSS).getText().equals(nodeName) && link.contains($(".back-btn>p").getText())) {
+//        if ($(linkNodesTitleCSS).getText().equals(nodeName) && link.contains($(".back-btn>p").getText())) {
+        if ($(linkNodesTitleCSS).getText().equals(nodeName)) {
             System.out.println("Link Node Creation - ok");
         } else {
             System.out.println($(".text-block>div>input").getAttribute("ng-reflect-model") + " - $(\".text-block>div>input\").getText(); " + link + " - link");
@@ -169,7 +214,7 @@ public class CreateNode {
     @Test
     public void createGenericNode() {
         $$(setingsBtnsCSS).get(1).click();
-        $(createNodeBtnCSS).click();
+        $$(createNodeBtnsCSS).get(0).click();
         new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(addFilesBtnsCSS).get(0)));
         $$(tabsBtnsCSS).get(4).click();
         nodeName = fairy.textProducer().latinWord(2);

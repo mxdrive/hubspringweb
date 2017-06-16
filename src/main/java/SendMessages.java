@@ -222,9 +222,8 @@ public class SendMessages extends TestSuite{
             } catch (Exception ignored) {
             }
             if (!WebDriverRunner.source().contains("error") || !WebDriverRunner.source().contains("problem")) {
-                if (!$(".md-primary").isDisplayed()) {
-                    isDisplayed = true;
-                }
+//                if (!$(".md-primary>svg>path").isDisplayed()) {
+                isDisplayed = !($("md-progress-circle").isDisplayed());
             } else {
                 screenshot("WebDriverRunner.source() " + filename);
                 System.out.println(filename + " made screenshot");

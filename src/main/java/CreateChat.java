@@ -63,8 +63,21 @@ public class CreateChat {
 //        refresh();
         String result = "ok";
         if (chatType.equals("Direct")) {
-            if (!$$(".chat-item>div>.title").get(0).getText().equals($(".profile-name").getText())) {
-                result = "fail";
+            System.out.println("$$(\".chat-item>div>.title\").get(0).getText() " + $$(".chat-item>div>.title").get(0).getText());
+            System.out.println("chatname.split(\" \")[0] " + chatname.split(" ")[0]);
+            System.out.println("chatname.split(\" \")[1] " + chatname.split(" ")[1]);
+            if (!chatname.split(" ")[1].equals("") && !chatname.split(" ")[0].equals("")) {
+                if (!$$(".chat-item>div>.title").get(0).getText().contains(chatname.split(" ")[0]) || !$$(".chat-item>div>.title").get(0).getText().contains(chatname.split(" ")[1])) {
+                    result = "fail";
+                }
+            } else if (chatname.split(" ")[1].equals("")){
+                if (!$$(".chat-item>div>.title").get(0).getText().contains(chatname.split(" ")[0])) {
+                    result = "fail";
+                }
+            } else if (chatname.split(" ")[0].equals("")) {
+                if (!$$(".chat-item>div>.title").get(0).getText().contains(chatname.split(" ")[1])) {
+                    result = "fail";
+                }
             }
         } else {
             try {
@@ -85,7 +98,9 @@ public class CreateChat {
             } else System.out.println("Set Group Chat Picture - fail");
         }
 
-        searchValue = chatname;
+        if (chatType.equals("Direct")) {
+            searchValue = chatname.split(" ")[1] + chatname.split(" ")[0];
+        } else searchValue = chatname;
         System.out.println("Create " + chatType + " Chat - " + result);
 
         new SendMessages().sendFiles(chatType + " chat");

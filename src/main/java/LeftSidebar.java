@@ -16,14 +16,15 @@ public class LeftSidebar extends TestSuite{
 //        isLastMessageDisplayed(".chats-list-container>div>div>div>div>.message", ".message-parsed", ".chats-list-container>div>div>div>div>.message", "Chats", ".outgoin.time-ago");
 //        new ScrollHandler().scrollHandler(".chats-list-container>div", WebDriverRunner.getWebDriver());
         //TODO temp
-//        isLastMessageDisplayed(".chats-list-container>div>div>div>div>.message", ".message-parsed", ".chats-list-container>div>div>div>div>.message", "Chats");
+        isLastMessageDisplayed(".chats-list-container>div>div>div>div>.message", ".message-parsed", ".chats-list-container>div>div>div>div>.message", "Chats");
         chatsFilter();
 //        open(baseURL);
         $$(".tab-icon").get(1).click();
         $$(".tab-icon").get(0).click();
         //TODO temp
-//        chatsAreClickable(".chats-list-container>div>div>div>div>.message", "chats");
+        chatsAreClickable(".chats-list-container>div>div>div>div>.message", "chats");
 //        search(".chats-list-container>div", ".chat-item>div>.title", "Chat");
+        new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($(".create-chat-icon")));
         createChatIcon(".create-chat-icon", "manage/conversation", "chat", true);
     }
 
@@ -34,10 +35,10 @@ public class LeftSidebar extends TestSuite{
 //        $$(".tab-icon").get(1).shouldBe(Condition.selected);
 //        new ScrollHandler().scrollHandler(".chats-list-container>div", WebDriverRunner.getWebDriver());
         //TODO temp
-//        chatsAreClickable(".chats-list-container>div>div>div>.title","streams");
+        chatsAreClickable(".chats-list-container>div>div>div>.title","streams");
 //        isLastMessageDisplayed(".chats-list-container>div>div>div>.title", ".message-parsed", ".chats-list-container>div>div>div>.message", "Streams", ".msg-date");
         //TODO temp
-//        isLastMessageDisplayed(".chats-list-container>div>div>div>.title", ".message-parsed", ".chats-list-container>div>div>div>.message", "Streams");
+        isLastMessageDisplayed(".chats-list-container>div>div>div>.title", ".message-parsed", ".chats-list-container>div>div>div>.message", "Streams");
         streamsFilter();
         open(baseURL);
         $$(".tab-icon").get(1).click();
@@ -51,13 +52,13 @@ public class LeftSidebar extends TestSuite{
 //        new ScrollHandler().scrollHandler(".chats-list-container>div", WebDriverRunner.getWebDriver());
 //        isLastMessageDisplayed(".message-text>p",".chats-list-container>div>div", ".chats-list-container>div>div>div>div>.message", "Alerts", ".message-bubble.tail>footer");
         //TODO temp
-//        isLastMessageDisplayed(".message-text>p",".chats-list-container>div>div", ".chats-list-container>div>div>div>div>.message", "Alerts");
+        isLastMessageDisplayed(".message-text>p",".chats-list-container>div>div", ".chats-list-container>div>div>div>div>.message", "Alerts");
         open(baseURL);
         $$(".tab-icon").get(2).click();
         $$(".tab-icon>i").get(2).shouldHave(Condition.attribute("class", "material-icons active"));
         $(".selected-filter-value").shouldBe(Condition.hidden);
         //TODO temp
-//        alertsAreClickable();
+        alertsAreClickable();
 //        search(".chats-list-container>div>div", ".btn-block>div>div>.title", "Alert");
         createChatIcon(".create-chat-icon", "manage/notification", "alert", true);
     }
@@ -251,9 +252,7 @@ public class LeftSidebar extends TestSuite{
             }
             System.out.println(tabName + " Search - " + result);
         } else System.out.println(tabName + " Search result is empty");
-        $(".input-header").clear();
-        $(".input-header").setValue("");
-        $(".input-header").sendKeys(Keys.ENTER);
+        refresh();
     }
 
     @Test

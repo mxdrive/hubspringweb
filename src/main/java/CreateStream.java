@@ -29,8 +29,10 @@ public class CreateStream {
 //        refresh();
         new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.not(ExpectedConditions.urlContains(";")));
 //        open(WebDriverRunner.url().replaceAll(";", "/"));
-        $$(".text-block").get(0).click();
+        $(".btn-text").click();
+//        $$(".text-block").get(0).click();
         try {
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($(".main-title")));
             new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.textToBePresentInElement($(".main-title"), streamName));
         } catch (Exception ignored) {
         }
