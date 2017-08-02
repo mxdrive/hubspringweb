@@ -2,6 +2,8 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -20,7 +22,7 @@ import static com.codeborne.selenide.WebDriverRunner.source;
 public class Mob {
 
     @Test
-    public void mob() throws InterruptedException {
+    public void nodeRemoveMob() throws InterruptedException {
 
         String emailName = "email";
         String nextBtn = ".a0-primary";
@@ -118,5 +120,44 @@ public class Mob {
             $(By.cssSelector("button.bt-save-send")).click();
             $(".btn-text").click();
         }
+    }
+
+    @Test
+    void chatRemove() throws InterruptedException {
+        String emailName = "email";
+        String nextBtn = ".a0-primary";
+        String pass = ".password-input";
+        String settings = ".ion-gear-b";
+        String deleteNodeBtns = ".ion-trash-b"; //get(0)
+        String del = ".ion-close";
+        String btns = ".button-default";
+
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        setWebDriver(new CustomWebDriverProvider().createDriver(capabilities));
+        getWebDriver().manage().window().maximize();
+
+        Selenide.open("http://localhost:9000");
+        $(By.name(emailName)).setValue("achernenko@s-pro.io");
+        $(nextBtn).click();
+        $(pass).setValue("Password1!");
+        $(".button-block").click();
+        Thread.sleep(180000);
+
+        $$(".material-icons").get(0).click();
+//        Thread.sleep(5000);
+        try {
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 20).until(ExpectedConditions.visibilityOf($$(".chat-time-ago").get(0)));
+        } catch (Exception ignored) {
+            System.out.println("ooooo");
+        }
+//        Actions builder = new Actions(getWebDriver());
+//        Action moveto = builder.clickAndHold(getWebDriver().findElements(By.cssSelector(".chat-time-ago")).get(0)).moveByOffset(-500, 0).release().build();
+//        moveto.perform();
+
+        Actions move = new Actions(getWebDriver());
+        Action action = (Action) move.dragAndDropBy(getWebDriver().findElements(By.cssSelector(".item-content")).get(0), -1000, 0).build();
+        action.perform();
+
+        Thread.sleep(200000);
     }
 }

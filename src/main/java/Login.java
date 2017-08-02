@@ -12,8 +12,8 @@ public class Login extends TestSuite{
         if (isOutput) {
             new HeaderFooter().headerFooter();
             if ($(By.name("action")).has(Condition.attribute("ng-reflect-disabled"))) {
-                System.out.println("Submit button disabled");
-            } else System.out.println("Submit button enabled");
+                System.out.println("Submit button disabled - ok");
+            } else System.out.println("Submit button enabled - fail");
         }
 
         //uncomment if want to check forgot password page

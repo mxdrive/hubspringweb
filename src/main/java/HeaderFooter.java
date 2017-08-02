@@ -12,14 +12,14 @@ public class HeaderFooter {
     public void headerFooter() {
 
         //header
-        if ($(By.className("logo")).getAttribute("href").equals("https://www.hubspring.com/")) {
+        if ($(By.className("logo")).getAttribute("href").equals("http://hubspringhealth.com/")) {
             System.out.println("Logo link ok");
         } else {
             System.out.println("Logo link fail");
             System.out.println($(By.className("logo")).getAttribute("href"));
         }
 
-        if ($(By.className("nav-item-text")).closest("a").getAttribute("href").equals("https://www.hubspring.com/")) {
+        if ($(By.className("nav-item-text")).closest("a").getAttribute("href").equals("http://hubspringhealth.com/")) {
             System.out.println("Site logo link ok");
         } else {
             System.out.println($(By.className("nav-item-text")).closest("a").getAttribute("href"));

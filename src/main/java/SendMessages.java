@@ -175,7 +175,7 @@ public class SendMessages extends TestSuite{
         Boolean isDisplayed = false;
         if (filename.toLowerCase().contains(".jpg") || filename.toLowerCase().contains(".jpeg") || filename.toLowerCase().contains(".png") || filename.toLowerCase().contains(".gif") || filename.toLowerCase().contains(".svg")) {
             try {
-                new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($(".content>img")));
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.visibilityOf($(".content>img")));
             } catch (Exception ignored) {
             }
             if ($(".content>img").isDisplayed() && $(".content>img").getAttribute("src").contains("amazonaws")) {
@@ -187,6 +187,10 @@ public class SendMessages extends TestSuite{
                 screenshot("Problem with preview of file " + filename);
             }
         } else if (filename.toLowerCase().contains(".mp4")) {
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 20).until(ExpectedConditions.visibilityOf($(".content>video")));
+            } catch (Exception ignored) {
+            }
             if ($(".content>video").isDisplayed() && $(".content>video").getAttribute("src").contains("amazonaws")) {
                 isDisplayed = true;
             } else if ($(".content>video").isDisplayed()) {
