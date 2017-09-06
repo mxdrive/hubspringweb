@@ -43,7 +43,6 @@ public class TestSuite {
 //        System.setProperty("webdriver.gecko.driver", "./geckodriver");
 //        Configuration.browser = "marionette";
 
-
         open(baseURL);
     }
 
