@@ -17,7 +17,10 @@ public class ChangeHub extends ProfileEdit{
         int newHub;
         $(sidemenuCSS).click();
         $$(hubIconsCSS).get(0).shouldBe(Condition.visible);
-        new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(hubIconsCSS).get($$(hubIconsCSS).size() - 1)));
+        try {
+            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(hubIconsCSS).get($$(hubIconsCSS).size() - 1)));
+        } catch (Exception ignored) {
+        }
         currentHub = isSelected();
         Random random = new Random();
         SelenideElement element;

@@ -36,7 +36,10 @@ public class CreateChat {
             } catch (Exception ignored) {
             }
             //TODO temp
-            SelenideElement radio = $$(".chat-name").get(random.nextInt($$(".chat-name").size() - 1));
+            SelenideElement radio = null;
+            if ($$(".chat-name").size() > 1) {
+                radio = $$(".chat-name").get(random.nextInt($$(".chat-name").size() - 1));
+            } else radio = $$(".chat-name").get(0);
 //            SelenideElement radio = $$(".chat-name").get(0);
 //            System.out.println($$(".chat-name").get(random.nextInt($$(".chat-name").size())).getText());
 //            SelenideElement radio = $$(".chat-name").get(0);
@@ -48,7 +51,7 @@ public class CreateChat {
         }
         $("#chat-message").sendKeys(fairy.textProducer().sentence(10));
         if (chatType.equals("Group")) {
-            chatname = fairy.textProducer().sentence(10);
+            chatname = fairy.textProducer().sentence(4);
             $(".form-container>div>div>input").sendKeys(chatname);
             new ProfileEdit().uploadImage(ProfileEdit.changePhotoBtnCSS, ProfileEdit.chooseFileCSS, ProfileEdit.saveFileCSS);
 //            $(".input-file>input").setValue("./FilesToUpload/1.99MB.jpg");
@@ -84,7 +87,7 @@ public class CreateChat {
                 new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.textToBePresentInElement($$(".chat-item>div>.title").get(0), chatname));
             } catch (Exception ignored) {
             }
-            if (!$$(".chat-item>div>.title").get(0).getText().contains(chatname)) {
+            if (!$$(".chat-item>div>.title").get(0).getText().contains(chatname) && !chatname.contains($$(".chat-item>div>.title").get(0).getText())) {
                 System.out.println($$(".chat-item>div>.title").get(0).getText());
                 System.out.println(chatname);
                 screenshot("chatCreate_fail.jpg");

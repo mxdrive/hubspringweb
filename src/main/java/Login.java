@@ -21,7 +21,7 @@ public class Login extends TestSuite{
 //        new HeaderFooter().headerFooter();
 //        new Forgot().forgot();
 
-        $(By.id("email")).setValue(email);
+        $(By.id("email")).setValue(email).pressEnter();
         $(By.id("password")).setValue(pswd).pressEnter();
 //        Thread.sleep(3000);
         Configuration.timeout = 10000;

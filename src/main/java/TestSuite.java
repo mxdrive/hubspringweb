@@ -1,10 +1,14 @@
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverProvider;
 import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
@@ -68,8 +72,8 @@ public class TestSuite {
         $(".create-chat-icon").click();
 
         CreateChat chat = new CreateChat();
-        chat.createChat("Role");
         LeftSidebar search = new LeftSidebar();
+        chat.createChat("Role");
         search.search(".chats-list-container>div", ".chat-item>div>.title", "Chat", chat.getSearchValue());
         new LeftSidebar().createChatIcon(".create-chat-icon", "manage/conversation", "chat", false);
         chat.createChat("Group");
@@ -77,7 +81,12 @@ public class TestSuite {
         new LeftSidebar().createChatIcon(".create-chat-icon", "manage/conversation", "chat", false);
         chat.createChat("Direct");
         search.search(".chats-list-container>div", ".chat-item>div>.title", "Chat", chat.getSearchValue());
-        new LeftSidebar().streams();
+//        new LeftSidebar().streams();
+        //TODO remove after streams migration
+        $$(".tab-icon").get(1).click();
+        $$(".tab-icon>i").get(1).shouldHave(Condition.attribute("class", "material-icons active"));
+        new LeftSidebar().createChatIcon(".create-chat-icon", "manage/stream", "stream", true);
+
         CreateStream stream = new CreateStream();
         stream.createStream();
         search.search(".chats-list-container>div", ".btn-block>div>div>.title", "Stream", stream.getSearchValue());
@@ -112,7 +121,18 @@ public class TestSuite {
         createNode.createFileNode();
         createNode.createContactNode();
         createNode.createTextNode();
-        createNode.createLinkNode();
+        createNode.createLinkNode(true);
+        createNode.createLinkNode(false);
         createNode.createGenericNode();
+    }
+
+    public static boolean isDisplayed(WebElement element) {
+        try {
+            WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), 2);
+            wait.until(ExpectedConditions.visibilityOf(element));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

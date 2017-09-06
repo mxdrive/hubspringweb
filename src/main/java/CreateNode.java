@@ -30,6 +30,8 @@ public class CreateNode {
     String allRolesCheckboxCSS = ".md-checkbox-indeterminate";
     String nodesTitleCSS = ".header>.title";
     String linkNodesTitleCSS = ".main-title";
+    String linkNodesTogglesCSS = ".md-slide-toggle-thumb";
+    String linkNodesPreviewActionsCSS = ".action-buttons-block>div";
     String textNodesTextCSS = ".text-html>p";
     String rolesCheckboxesCSS = ".role-check-box";
     String searchRolesCSS = ".input-header.ng-untouched.ng-pristine.ng-valid";
@@ -71,6 +73,10 @@ public class CreateNode {
                 new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($$(setingsBtnsCSS).get(1)));
                 new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.elementToBeClickable($$(setingsBtnsCSS).get(1)));
                 $$(setingsBtnsCSS).get(1).click();
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($$(createNodeBtnsCSS).get(0)));
+                } catch (Exception ignored) {
+                }
                 $$(createNodeBtnsCSS).get(0).click();
             }
             try {
@@ -117,7 +123,7 @@ public class CreateNode {
                     }
                     if (!WebDriverRunner.source().contains("error") || !WebDriverRunner.source().contains("problem")) {
 //                if (!$(".md-primary>svg>path").isDisplayed()) {
-                        result = "fail";
+                        result = "ok";
                     } else {
                         screenshot("WebDriverRunner.source() " + fileList.get(i));
                         System.out.println(fileList.get(i) + " made screenshot");
@@ -186,7 +192,7 @@ public class CreateNode {
     }
 
     @Test
-    public void createLinkNode() {
+    public void createLinkNode(Boolean isPrivate) {
         $$(setingsBtnsCSS).get(1).click();
         $$(createNodeBtnsCSS).get(0).click();
         new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($$(addFilesBtnsCSS).get(0)));
@@ -196,19 +202,31 @@ public class CreateNode {
         $$(inputsCSS).get(0).setValue(nodeName);
         $$(inputsCSS).get(1).setValue(link);
         //TODO public-private slider
+        if (isPrivate) {
+            $$(linkNodesTogglesCSS).get(0).click();
+        }
         changeNodeIcon(changeIconCSS, 38, 47);
 
-        $(saveBtnCss).click();
+        $$(saveBtnCss).get(1).click();
         $(allRolesCheckboxCSS).click();
         $(saveRolesBtnCSS).click();
 //        if ($(linkNodesTitleCSS).getText().equals(nodeName) && link.contains($(".text-block>div>input").getAttribute("ng-reflect-model"))) {
 //        if ($(linkNodesTitleCSS).getText().equals(nodeName) && link.contains($(".back-btn>p").getText())) {
-        if ($(linkNodesTitleCSS).getText().equals(nodeName)) {
-            System.out.println("Link Node Creation - ok");
+        String isSuccess = "ok";
+        if (isPrivate) {
+            if ($$(linkNodesPreviewActionsCSS).size() == 5) {
+                isSuccess = "fail";
+            }
         } else {
-            System.out.println($(".text-block>div>input").getAttribute("ng-reflect-model") + " - $(\".text-block>div>input\").getText(); " + link + " - link");
-            System.out.println("Link Node Creation - fail");
+            if ($$(linkNodesPreviewActionsCSS).size() != 5) {
+                isSuccess = "fail";
+            }
         }
+        if (!$(linkNodesTitleCSS).getText().equals(nodeName)) {
+            System.out.println($(".text-block>div>input").getAttribute("ng-reflect-model") + " - $(\".text-block>div>input\").getText(); " + link + " - link");
+            isSuccess = "fail";
+        }
+        System.out.println("Link Node Creation - " + isSuccess);
     }
 
     @Test

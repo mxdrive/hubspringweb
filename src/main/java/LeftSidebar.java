@@ -38,8 +38,8 @@ public class LeftSidebar extends TestSuite{
         chatsAreClickable(".chats-list-container>div>div>div>.title","streams");
 //        isLastMessageDisplayed(".chats-list-container>div>div>div>.title", ".message-parsed", ".chats-list-container>div>div>div>.message", "Streams", ".msg-date");
         //TODO temp
-        isLastMessageDisplayed(".chats-list-container>div>div>div>.title", ".message-parsed", ".chats-list-container>div>div>div>.message", "Streams");
-        streamsFilter();
+//        isLastMessageDisplayed(".chats-list-container>div>div>div>.title", ".message-parsed", ".chats-list-container>div>div>div>.message", "Streams");
+//        streamsFilter();
         open(baseURL);
         $$(".tab-icon").get(1).click();
 //        search(".chats-list-container>div", ".btn-block>div>div>.title", "Stream");
@@ -59,6 +59,8 @@ public class LeftSidebar extends TestSuite{
         $(".selected-filter-value").shouldBe(Condition.hidden);
         //TODO temp
         alertsAreClickable();
+        refresh();
+        $$(".tab-icon").get(2).click();
 //        search(".chats-list-container>div>div", ".btn-block>div>div>.title", "Alert");
         createChatIcon(".create-chat-icon", "manage/notification", "alert", true);
     }

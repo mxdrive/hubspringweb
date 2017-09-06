@@ -9,9 +9,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.util.Random;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.refresh;
+import static com.codeborne.selenide.Selenide.*;
 
 public class CreateAlert {
     public String searchValue;
@@ -60,10 +58,20 @@ public class CreateAlert {
             Fairy fairy = Fairy.create();
 
             $$(".tab-icon").get(2).click();
+            try {
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($$(".md-checkbox-label").get(0)));
+            } catch (Exception ignored) {
+            }
             new LeftSidebar().createChatIcon(".create-chat-icon", "manage/notification", "alert", false);
 //            $(".create-chat-icon").click();
 //            $(".create-chat-icon").click();
-            new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.visibilityOf($$(".md-checkbox-label").get(0)));
+            if (new TestSuite().isDisplayed($$(".md-checkbox-label").get(0))) {
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.visibilityOf($$(".md-checkbox-label").get(0)));
+                } catch (Exception ignored) {
+                    screenshot("noCheckboxes.png");
+                }
+            } else $(".create-chat-icon").click();;
             String user = $$(".md-checkbox-label").get(0).getText();
             if (alertType.equals("Group")) {
                 $(".button-tab.right-tab").click();

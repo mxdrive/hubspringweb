@@ -225,7 +225,7 @@ public class ProfileEdit extends TestSuite {
         new WebDriverWait(WebDriverRunner.getWebDriver(), 4).until(ExpectedConditions.visibilityOf($(profileNameCSS)));
         $(profileNameCSS).shouldNot(Condition.empty);
         $$(inputsCSS).get(2).shouldNot(Condition.empty);
-        if ($(profileNameCSS).getText().contains(prefix + " " + firstName + " " + lastName + " " + suffix)) {
+        if ($(profileNameCSS).getText().contains(prefix + " " + firstName + " " + lastName + ", " + suffix)) {
             if ($$(inputsCSS).get(0).getAttribute("ng-reflect-model").contains(prefix) && $$(inputsCSS).get(1).getAttribute("ng-reflect-model").contains(firstName)
                     && $$(inputsCSS).get(3).getAttribute("ng-reflect-model").contains(suffix)
                     && $$(inputsCSS).get(4).getAttribute("ng-reflect-model").contains(title) && $$(inputsCSS).get(5).getAttribute("ng-reflect-model").contains(companyName)
@@ -268,6 +268,7 @@ public class ProfileEdit extends TestSuite {
             i = random.nextInt(rbuttons.size());
         }
         rbuttons.get(i).click();
+        String hubname = rbuttons.get(i).parent().$(By.xpath(".//div[2]/span")).getText();
         $(saveBtnCSS).click();
         new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($(alertCSS)));
 
@@ -276,20 +277,24 @@ public class ProfileEdit extends TestSuite {
 
         $(sidemenuCSS).click();
         $$(hubIconsCSS).get(i).shouldBe(Condition.visible);
-        if (!$$(hubIconsCSS).get(i).parent().parent().$(By.xpath(".//div[2]")).getAttribute("style").equals("height: 0px;")) {
-            System.out.println("Change Default Hub - ok");
-            $(profileBtnCSS).click();
-            $$(tabsCSS).get(1).click();
-            try {
-                new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($(".md-radio-inner-circle")));
-            } catch (Exception ignored) {
+        for (SelenideElement e : $$(".left-liner")) {
+            if (!e.getAttribute("style").equals("height: 0px;")) {
+                if (e.parent().$(By.xpath(".//div[1]/span")).getText().equals(hubname) ) { // || !$$(hubIconsCSS).get(i).parent().parent().$(By.xpath(".//div[2]")).getAttribute("style").equals("height: 0px;")
+                    System.out.println("Change Default Hub - ok");
+                    $(profileBtnCSS).click();
+                    $$(tabsCSS).get(1).click();
+                    try {
+                        new WebDriverWait(WebDriverRunner.getWebDriver(), 3).until(ExpectedConditions.visibilityOf($(".md-radio-inner-circle")));
+                    } catch (Exception ignored) {
+                    }
+                    for (SelenideElement j : $$(".chat-name")) {
+                        if (j.getText().equals("Testhub")) j.click();
+                    }
+                    $(saveBtnCSS).click();
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($(alertCSS)));
+                } else System.out.println("Change Default Hub - fail");
             }
-            for (SelenideElement e : $$(".chat-name")) {
-                if (e.getText().equals("Testhub2")) e.click();
-            }
-            $(saveBtnCSS).click();
-            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.visibilityOf($(alertCSS)));
-        } else System.out.println("Change Default Hub - fail");
+        }
     }
 
     @Test

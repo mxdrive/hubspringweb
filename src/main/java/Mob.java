@@ -23,14 +23,14 @@ public class Mob {
 
     @Test
     public void nodeRemoveMob() throws InterruptedException {
+        String del = ".ion-close";
+        String btns = ".button-default";
 
         String emailName = "email";
-        String nextBtn = ".a0-primary";
+        String nextBtn = ".login-button";
         String pass = ".password-input";
         String settings = ".ion-gear-b";
         String deleteNodeBtns = ".ion-trash-b"; //get(0)
-        String del = ".ion-close";
-        String btns = ".button-default";
 
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         setWebDriver(new CustomWebDriverProvider().createDriver(capabilities));
@@ -39,6 +39,7 @@ public class Mob {
         Selenide.open("http://localhost:9000");
         $(By.name(emailName)).setValue("achernenko@s-pro.io");
         $(nextBtn).click();
+        Thread.sleep(1000);
         $(pass).setValue("Password1!");
         $(".button-block").click();
         Thread.sleep(5000);
@@ -51,25 +52,54 @@ public class Mob {
         } catch (Exception ignored) {
         }
         $$(deleteNodeBtns).get(0).click();
+        deleteNodes(del, btns);
+//        List<SelenideElement> elements = $$(".title-text");
+//        System.out.println(elements.size());
+//        for (int i = 0; i <= elements.size(); i++) {
+//            System.out.println("elements.size() " + elements.size());
+//            System.out.println(i);
+//            SelenideElement e = elements.get(i);
+//            Thread.sleep(1000);
+//            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.elementToBeClickable(e));
+//            e.click();
+//            $(".button-positive").click();
+//            Thread.sleep(500);
+////            new WebDriverWait(WebDriverRunner.getWebDriver(), 2).until(ExpectedConditions.invisibilityOf($(".button-positive")));
+//            try {
+//                new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.visibilityOf($(".button-positive")));
+//                $(".button-positive").click();
+//            } catch (Exception ignored) {
+//            }
+//            new WebDriverWait(WebDriverRunner.getWebDriver(), 2).until(ExpectedConditions.invisibilityOf($$(btns).get(0)));
+//            elements = $$(".title-text");
+//        }
+    }
+
+    private void deleteNodes(String del, String btns) throws InterruptedException {
         List<SelenideElement> elements = $$(".title-text");
         System.out.println(elements.size());
         for (int i = 0; i <= elements.size(); i++) {
-            System.out.println("elements.size() " + elements.size());
-            System.out.println(i);
-            SelenideElement e = elements.get(i);
-            Thread.sleep(1000);
-            new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.elementToBeClickable(e));
-            e.click();
-            $(".button-positive").click();
-            Thread.sleep(500);
-//            new WebDriverWait(WebDriverRunner.getWebDriver(), 2).until(ExpectedConditions.invisibilityOf($(".button-positive")));
-            try {
-                new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.visibilityOf($(".button-positive")));
+            if (i == elements.size() - 1) {
+                deleteNodes(del, btns);
+
+            } else {
+                System.out.println("elements.size() " + elements.size());
+                System.out.println(i);
+                SelenideElement e = elements.get(i);
+                Thread.sleep(1000);
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 5).until(ExpectedConditions.elementToBeClickable(e));
+                e.click();
                 $(".button-positive").click();
-            } catch (Exception ignored) {
+                Thread.sleep(500);
+//            new WebDriverWait(WebDriverRunner.getWebDriver(), 2).until(ExpectedConditions.invisibilityOf($(".button-positive")));
+                try {
+                    new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.visibilityOf($(".button-positive")));
+                    $(".button-positive").click();
+                } catch (Exception ignored) {
+                }
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 2).until(ExpectedConditions.invisibilityOf($$(btns).get(0)));
+                elements = $$(".title-text");
             }
-            new WebDriverWait(WebDriverRunner.getWebDriver(), 2).until(ExpectedConditions.invisibilityOf($$(btns).get(0)));
-            elements = $$(".title-text");
         }
     }
 

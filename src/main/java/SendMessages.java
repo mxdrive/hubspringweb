@@ -62,14 +62,12 @@ public class SendMessages extends TestSuite{
                     new WebDriverWait(WebDriverRunner.getWebDriver(), 2).until(ExpectedConditions.invisibilityOf($$(".send-btn").get($$(".send-btn").size() - 1)));
                 } catch (Exception ignored) {
                 }
-                if (isClickable($$(".send-btn").get($$(".send-btn").size() - 1)) && $$(".send-btn").get($$(".send-btn").size() - 1).isDisplayed()) {
+                if ($$(".send-btn").size() > 0 && $$(".send-btn").size() > 1 && isClickable($$(".send-btn").get($$(".send-btn").size() - 1)) && $$(".send-btn").get($$(".send-btn").size() - 1).isDisplayed()) {
                     try {
-                        if ($$(".send-btn").size() > 0) {
-                            $$(".send-btn").get($$(".send-btn").size() - 1).click();
-                        }
+                        screenshot("sendbtn.jpg");
+                        $$(".send-btn").get($$(".send-btn").size() - 1).click();
                     } catch (Exception ignored) {
                     }
-                    screenshot("sendbtn.jpg");
                 } else  {
                     if (isClickable($(".dialog__close-btn"))) {
                         try {
@@ -104,9 +102,9 @@ public class SendMessages extends TestSuite{
                     System.out.println("File " + fileEntry.getName() + " hasn't been uploaded");
                 }
                 else {
-                    if ($$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div[1]")).$(By.xpath("./img")).exists()) {
+                    if ($$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div[1]")).$(By.xpath("./img")).exists() && $$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div[1]")).$(By.xpath("./img")).isDisplayed()) {
                         $$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div[1]")).$(By.xpath("./img")).click();
-                    } else if ($$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div")).$(By.xpath("./img")).exists()) {
+                    } else if ($$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div")).$(By.xpath("./img")).exists() && $$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div")).$(By.xpath("./img")).isDisplayed()) {
                         $$(".file-name").get($$(".file-name").size() - 1).$(By.xpath("following::div")).$(By.xpath("./img")).click();
                     }
                         else $$(".file-name").get($$(".file-name").size() - 1).click();
@@ -175,7 +173,7 @@ public class SendMessages extends TestSuite{
         Boolean isDisplayed = false;
         if (filename.toLowerCase().contains(".jpg") || filename.toLowerCase().contains(".jpeg") || filename.toLowerCase().contains(".png") || filename.toLowerCase().contains(".gif") || filename.toLowerCase().contains(".svg")) {
             try {
-                new WebDriverWait(WebDriverRunner.getWebDriver(), 10).until(ExpectedConditions.visibilityOf($(".content>img")));
+                new WebDriverWait(WebDriverRunner.getWebDriver(), 40).until(ExpectedConditions.visibilityOf($(".content>img")));
             } catch (Exception ignored) {
             }
             if ($(".content>img").isDisplayed() && $(".content>img").getAttribute("src").contains("amazonaws")) {

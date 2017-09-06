@@ -34,7 +34,7 @@ public class HeaderFooter {
         }
 
         //footer
-        String chord = Keys.chord(Keys.LEFT_CONTROL, Keys.ENTER);
+        String chord = Keys.chord(Keys.COMMAND, Keys.ENTER);
         $(By.linkText("Terms of Use")).sendKeys(chord);
         ArrayList<String> tabs = new ArrayList<> (getWebDriver().getWindowHandles());
         getWebDriver().switchTo().window(tabs.get(1));
